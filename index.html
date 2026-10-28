@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- ================= GOOGLE SEO META TAGS ================= -->
+  <title>AnimVault Studio | Watch Original 2D, 3D & Anime Animations Online</title>
+  <meta name="description" content="Watch high-definition original 2D, 3D, Anime, and VFX animations online for free at AnimVault Studio. Independent animation hub with zero ads." />
+  <meta name="keywords" content="animation video, 3D animation, 2D animation, indie anime, watch animation online, VFX short films, AnimVault Studio, original animation" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="AnimVault Studio" />
+
+  <!-- Open Graph / Social Media Sharing Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="AnimVault Studio — Independent Animation Hub" />
+  <meta property="og:description" content="Stream original 2D, 3D, and Anime animations in HD with zero ads." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80" />
+
+  <!-- Google Fonts & Tailwind CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Outfit', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            obsidian: '#090D16',
+            slateCard: '#131B2E',
+            cyanAccent: '#38BDF8',
+            violetAccent: '#818CF8',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Dynamic Google Video Schema for SEO Ranking -->
+  <script id="seo-schema" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AnimVault Studio",
+    "description": "Independent 2D, 3D & Anime Animation Streaming Platform"
+  }
+  </script>
+
+  <style>
+    body { background-color: #090D16; color: #F8FAFC; overflow-x: hidden; }
+    .glass-nav { background: rgba(9, 13, 22, 0.88); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .card-glow { transition: all 0.25s ease; border: 1px solid rgba(255, 255, 255, 0.07); }
+    .card-glow:hover { transform: translateY(-4px); border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 12px 30px -8px rgba(56, 189, 248, 0.2); }
+    video::-webkit-media-controls-enclosure { overflow: hidden; }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- TOP NAVIGATION -->
+  <header class="glass-nav sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <a href="#" onclick="resetFilter(); return false;" class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyanAccent to-violetAccent flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-obsidian" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div>
+          <span class="font-display font-extrabold text-xl tracking-tight text-white">AnimVault</span>
+          <span class="block text-[10px] font-mono uppercase tracking-widest text-cyanAccent">Global Animation Hub</span>
+        </div>
+      </a>
+
+      <!-- Search Input -->
+      <div class="flex-1 max-w-md mx-4">
+        <input id="searchInput" type="text" placeholder="Search animations, 3D, anime..." 
+          class="w-full pl-4 pr-4 py-2.5 bg-slateCard/90 border border-slate-700/70 rounded-xl text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyanAccent" />
+      </div>
+
+      <!-- Admin Controls -->
+      <div class="flex items-center gap-2.5">
+        <button id="adminToggleBtn" onclick="handleAdminClick()" class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-700 bg-slateCard/80 text-slate-300 hover:text-white transition">
+          <span id="adminStatusText">Creator Login</span>
+        </button>
+
+        <button onclick="handleUploadClick()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-cyanAccent to-violetAccent text-obsidian shadow-lg hover:brightness-110 transition">
+          + Add Video
+        </button>
+
+        <!-- Publish Globally Button (Visible when Admin is Unlocked) -->
+        <button id="exportSiteBtn" onclick="exportGlobalHTML()" class="hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-400 text-obsidian shadow-lg hover:bg-emerald-300 transition" title="Download updated HTML so everyone in the world can see your new videos">
+          🌍 Save for Public
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Admin Notice Banner (Only visible when unlocked) -->
+    <div id="adminBanner" class="hidden mb-6 p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        <strong>Creator Mode Active:</strong> To make newly added videos visible to <strong>everyone on Google & all devices</strong>, add your video using a <strong>Direct Video URL</strong> (Catbox or Archive.org), then click <strong>"🌍 Save for Public"</strong> and upload the downloaded <code>index.html</code> to your hosting!
+      </div>
+    </div>
+
+    <!-- Category Bar -->
+    <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
+      <div class="flex items-center gap-2 overflow-x-auto pb-1" id="categoryPills">
+        <button onclick="filterCategory('All')" data-cat="All" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-cyanAccent text-obsidian">All Animations</button>
+        <button onclick="filterCategory('2D Animation')" data-cat="2D Animation" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slateCard text-slate-300">2D Animation</button>
+        <button onclick="filterCategory('3D Animation')" data-cat="3D Animation" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slateCard text-slate-300">3D Animation</button>
+        <button onclick="filterCategory('Anime / Action')" data-cat="Anime / Action" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slateCard text-slate-300">Anime / Action</button>
+        <button onclick="filterCategory('VFX & Short Films')" data-cat="VFX & Short Films" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slateCard text-slate-300">VFX & Short Films</button>
+      </div>
+      <span id="videoCounter" class="text-xs font-mono text-slate-400"></span>
+    </div>
+
+    <!-- Video Grid -->
+    <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800/80 bg-obsidian/90 py-8 mt-16 text-center text-xs text-slate-500">
+    <p>© 2026 AnimVault Studio — Independent Original Animation Showcase. Ad-Free & DMCA Protected.</p>
+  </footer>
+
+  <!-- THEATRE VIDEO MODAL -->
+  <div id="playerModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-slateCard border border-slate-700 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-800">
+        <div>
+          <span id="modalCategory" class="text-[11px] font-mono uppercase text-cyanAccent"></span>
+          <h3 id="modalTitle" class="font-display font-bold text-lg text-white"></h3>
+        </div>
+        <button onclick="closePlayerModal()" class="p-2 text-slate-400 hover:text-white text-xl font-bold">✕</button>
+      </div>
+      <div class="bg-black aspect-video w-full">
+        <video id="mainVideoPlayer" class="w-full h-full" controls controlsList="nodownload" oncontextmenu="return false;"></video>
+      </div>
+      <div class="p-4 flex justify-between items-center text-xs text-slate-300">
+        <p id="modalDesc"></p>
+        <button id="modalDeleteBtn" onclick="deleteCurrentVideo()" class="hidden px-3 py-1.5 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/40 font-semibold">Delete Video</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN LOGIN MODAL -->
+  <div id="pinModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80">
+    <div class="bg-slateCard border border-slate-700 rounded-2xl max-w-sm w-full p-6">
+      <h3 class="font-display font-bold text-lg text-white mb-1">Creator Studio Lock</h3>
+      <p class="text-xs text-slate-400 mb-4">Enter your Creator PIN (Default: 1234)</p>
+      <form onsubmit="verifyPin(event)">
+        <input id="pinInput" type="password" placeholder="••••" class="w-full px-4 py-2.5 bg-obsidian border border-slate-700 rounded-xl text-center text-lg tracking-widest text-white mb-3" required />
+        <p id="pinError" class="text-xs text-rose-400 hidden mb-3">Incorrect PIN!</p>
+        <div class="flex gap-2">
+          <button type="button" onclick="closePinModal()" class="flex-1 py-2 rounded-xl bg-slate-800 text-xs font-semibold">Cancel</button>
+          <button type="submit" class="flex-1 py-2 rounded-xl bg-cyanAccent text-obsidian text-xs font-bold">Unlock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- UPLOAD VIDEO MODAL -->
+  <div id="uploadModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80">
+    <div class="bg-slateCard border border-slate-700 rounded-2xl max-w-lg w-full p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-display font-bold text-lg text-white">Add New Animation (Public)</h3>
+        <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleVideoSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Animation Title (Important for Google Search) *</label>
+          <input id="vidTitle" type="text" required placeholder="e.g., Cyberpunk Samurai 3D Fight Animation" class="w-full px-3.5 py-2 bg-obsidian border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Category *</label>
+          <select id="vidCategory" class="w-full px-3.5 py-2 bg-obsidian border border-slate-700 rounded-xl text-sm text-white">
+            <option value="3D Animation">3D Animation</option>
+            <option value="2D Animation">2D Animation</option>
+            <option value="Anime / Action">Anime / Action</option>
+            <option value="VFX & Short Films">VFX & Short Films</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Direct Video URL (.mp4 from Catbox.moe or Archive.org) *</label>
+          <input id="vidUrl" type="url" required placeholder="https://files.catbox.moe/yourvideo.mp4" class="w-full px-3.5 py-2 bg-obsidian border border-slate-700 rounded-xl text-sm text-white" />
+          <p class="text-[11px] text-cyanAccent mt-1">💡 Tip: Upload your video free at <b>catbox.moe</b> or <b>archive.org</b> and paste the direct .mp4 link here so the whole world can watch it.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Description (Helps Google find your video)</label>
+          <textarea id="vidDesc" rows="2" placeholder="Describe your animation story, software used (Blender, Maya, etc.)..." class="w-full px-3.5 py-2 bg-obsidian border border-slate-700 rounded-xl text-sm text-white"></textarea>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyanAccent to-violetAccent text-obsidian font-bold text-sm">
+          Add to Gallery
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ================= GLOBAL VIDEO LIST (SAVED DIRECTLY IN CODE FOR EVERYONE) =================
+    /* GLOBAL_VIDEOS_START */
+    let globalVideos = [
+      {
+        id: "vid-1",
+        title: "Big Buck Bunny — Open Source 3D Comedy Short",
+        category: "3D Animation",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        desc: "Blender Institute 3D animated short film showcasing rigging and outdoor lighting.",
+        date: "2026"
+      },
+      {
+        id: "vid-2",
+        title: "Elephants Dream — Surreal Sci-Fi 3D Animation",
+        category: "VFX & Short Films",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+        desc: "Experimental surreal sci-fi world created entirely in open-source 3D software.",
+        date: "2026"
+      }
+    ];
+    /* GLOBAL_VIDEOS_END */
+
+    let isAdmin = false;
+    let activeCategory = "All";
+    let currentPlayingId = null;
+    const ADMIN_PIN = "1234";
+
+    function renderGallery() {
+      const grid = document.getElementById('videoGrid');
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = globalVideos.filter(v => {
+        const matchCat = activeCategory === "All" || v.category === activeCategory;
+        const matchSearch = v.title.toLowerCase().includes(query) || (v.desc && v.desc.toLowerCase().includes(query));
+        return matchCat && matchSearch;
+      });
+
+      document.getElementById('videoCounter').textContent = `${filtered.length} Animation(s) Available`;
+
+      grid.innerHTML = filtered.map(v => `
+        <article class="bg-slateCard rounded-2xl overflow-hidden card-glow flex flex-col cursor-pointer" onclick="openPlayer('${v.id}')">
+          <div class="relative aspect-video bg-black overflow-hidden">
+            <video src="${v.url}#t=1.5" class="w-full h-full object-cover pointer-events-none" preload="metadata" muted></video>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-obsidian/90 text-cyanAccent border border-cyanAccent/30">${v.category}</span>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <h2 class="font-display font-bold text-base text-white line-clamp-1 mb-1">${v.title}</h2>
+              <p class="text-xs text-slate-400 line-clamp-2">${v.desc || ''}</p>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-800/80 flex justify-between items-center text-[11px] text-slate-500">
+              <span>Original Content</span>
+              <span class="text-cyanAccent font-semibold">Watch HD →</span>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      updateGoogleSchema();
+    }
+
+    // Automatically updates Google SEO Video Schema so Google ranks your videos
+    function updateGoogleSchema() {
+      const schemaEl = document.getElementById('seo-schema');
+      const itemList = globalVideos.map((v, idx) => ({
+        "@type": "VideoObject",
+        "position": idx + 1,
+        "name": v.title,
+        "description": v.desc || v.title,
+        "contentUrl": v.url,
+        "uploadDate": "2026-01-01T08:00:00+00:00",
+        "thumbnailUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80"
+      }));
+      schemaEl.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": itemList
+      }, null, 2);
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = "cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-cyanAccent text-obsidian";
+        } else {
+          btn.className = "cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slateCard text-slate-300";
+        }
+      });
+      renderGallery();
+    }
+
+    function resetFilter() {
+      document.getElementById('searchInput').value = '';
+      filterCategory('All');
+    }
+
+    function openPlayer(id) {
+      const v = globalVideos.find(item => item.id === id);
+      if (!v) return;
+      currentPlayingId = id;
+      document.getElementById('modalTitle').textContent = v.title;
+      document.getElementById('modalCategory').textContent = v.category;
+      document.getElementById('modalDesc').textContent = v.desc || '';
+      const player = document.getElementById('mainVideoPlayer');
+      player.src = v.url;
+      player.play().catch(() => {});
+      document.getElementById('modalDeleteBtn').classList.toggle('hidden', !isAdmin);
+      document.getElementById('playerModal').classList.remove('hidden');
+      document.getElementById('playerModal').classList.add('flex');
+    }
+
+    function closePlayerModal() {
+      const player = document.getElementById('mainVideoPlayer');
+      player.pause();
+      player.src = "";
+      document.getElementById('playerModal').classList.add('hidden');
+      document.getElementById('playerModal').classList.remove('flex');
+    }
+
+    function handleAdminClick() {
+      if (isAdmin) {
+        isAdmin = false;
+        updateAdminUI();
+      } else {
+        document.getElementById('pinModal').classList.remove('hidden');
+        document.getElementById('pinModal').classList.add('flex');
+      }
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').classList.add('hidden');
+      document.getElementById('pinModal').classList.remove('flex');
+    }
+
+    function verifyPin(e) {
+      e.preventDefault();
+      if (document.getElementById('pinInput').value === ADMIN_PIN) {
+        isAdmin = true;
+        document.getElementById('pinInput').value = '';
+        document.getElementById('pinError').classList.add('hidden');
+        closePinModal();
+        updateAdminUI();
+      } else {
+        document.getElementById('pinError').classList.remove('hidden');
+      }
+    }
+
+    function updateAdminUI() {
+      document.getElementById('adminStatusText').textContent = isAdmin ? "Unlocked (Lock)" : "Creator Login";
+      document.getElementById('exportSiteBtn').classList.toggle('hidden', !isAdmin);
+      document.getElementById('adminBanner').classList.toggle('hidden', !isAdmin);
+    }
+
+    function handleUploadClick() {
+      if (!isAdmin) {
+        handleAdminClick();
+      } else {
+        document.getElementById('uploadModal').classList.remove('hidden');
+        document.getElementById('uploadModal').classList.add('flex');
+      }
+    }
+
+    function closeUploadModal() {
+      document.getElementById('uploadModal').classList.add('hidden');
+      document.getElementById('uploadModal').classList.remove('flex');
+    }
+
+    function handleVideoSubmit(e) {
+      e.preventDefault();
+      const newVid = {
+        id: "vid-" + Date.now(),
+        title: document.getElementById('vidTitle').value.trim(),
+        category: document.getElementById('vidCategory').value,
+        url: document.getElementById('vidUrl').value.trim(),
+        desc: document.getElementById('vidDesc').value.trim(),
+        date: new Date().getFullYear().toString()
+      };
+      globalVideos.unshift(newVid);
+      e.target.reset();
+      closeUploadModal();
+      renderGallery();
+      alert("Video Added! Now click the green '🌍 Save for Public' button on the top right to download your updated index.html file for your live site.");
+    }
+
+    function deleteCurrentVideo() {
+      if (!isAdmin || !currentPlayingId) return;
+      globalVideos = globalVideos.filter(v => v.id !== currentPlayingId);
+      closePlayerModal();
+      renderGallery();
+    }
+
+    // Exports the entire HTML file with the newly added videos baked into the code!
+    function exportGlobalHTML() {
+      let fullHTML = document.documentElement.outerHTML;
+      const replacement = `/* GLOBAL_VIDEOS_START */\n    let globalVideos = ${JSON.stringify(globalVideos, null, 6)};\n    /* GLOBAL_VIDEOS_END */`;
+      fullHTML = fullHTML.replace(/\/\* GLOBAL_VIDEOS_START \*\/[\s\S]*?\/\* GLOBAL_VIDEOS_END \*\//, replacement);
+      
+      const blob = new Blob(["<!DOCTYPE html>\n" + fullHTML], { type: "text/html" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "index.html";
+      a.click();
+    }
+
+    document.getElementById('searchInput').addEventListener('input', renderGallery);
+    renderGallery();
+  </script>
+</body>
+</html>
